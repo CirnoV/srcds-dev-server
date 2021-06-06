@@ -130,7 +130,7 @@ impl Handler for MyHandler {
 
     fn on_update(&self, ops: &[PathOp]) -> Result<bool, Error> {
         run_gomplate(&self.root, &self.config);
-        srcds::rcon(&self.config, "sm_map esseland".into());
+        srcds::rcon(&self.config, "sm_restartmap".into());
         self.handler.on_update(ops)
     }
 }
