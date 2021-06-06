@@ -74,7 +74,7 @@ fn main() -> Result<()> {
         }
         Command::Run => {
             generate_server_launcher(&root, server_config.port);
-            run_gomplate(&server_config);
+            run_gomplate(&root, &server_config);
 
             let cstrike = &root.join("cstrike");
             let sourcemod = &cstrike.join("addons").join("sourcemod");
@@ -90,16 +90,20 @@ fn main() -> Result<()> {
                 .cmd(vec!["".into()])
                 .build()?;
 
-            thread::spawn(|| {
-                std::process::Command::new("서버실행.bat")
-                    .current_dir(root)
-                    .output()
-                    .expect("failed to execute srcds");
+            {
+                let root = root.clone();
+                thread::spawn(|| {
+                    std::process::Command::new("서버실행.bat")
+                        .current_dir(root)
+                        .output()
+                        .expect("failed to execute srcds");
 
-                std::process::exit(1);
-            });
+                    std::process::exit(1);
+                });
+            }
 
             let handler = MyHandler {
+                root: root,
                 config: server_config.clone(),
                 handler: ExecHandler::new(config)?,
             };
@@ -109,6 +113,7 @@ fn main() -> Result<()> {
 }
 
 struct MyHandler {
+    root: PathBuf,
     config: DevServerConfig,
     handler: ExecHandler,
 }
@@ -119,12 +124,12 @@ impl Handler for MyHandler {
     }
 
     fn on_manual(&self) -> Result<bool, Error> {
-        run_gomplate(&self.config);
+        run_gomplate(&self.root, &self.config);
         self.handler.on_manual()
     }
 
     fn on_update(&self, ops: &[PathOp]) -> Result<bool, Error> {
-        run_gomplate(&self.config);
+        run_gomplate(&self.root, &self.config);
         srcds::rcon(&self.config, "sm_map esseland".into());
         self.handler.on_update(ops)
     }
