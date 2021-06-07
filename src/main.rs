@@ -1,4 +1,5 @@
 pub(crate) mod config;
+// pub(crate) mod fastdl;
 pub(crate) mod srcds;
 pub(crate) mod steamcmd;
 pub(crate) mod template;
@@ -20,6 +21,7 @@ use watchexec::{
 
 use crate::{
     config::{generate_config_file, parse_config, DevServerConfig},
+    // fastdl::run_miniserve,
     steamcmd::steamcmd_update_app,
     template::run_gomplate,
 };
@@ -101,6 +103,8 @@ fn main() -> Result<()> {
                     std::process::exit(1);
                 });
             }
+
+            // let _handle = run_miniserve(&root, &server_config);
 
             let handler = MyHandler {
                 root: root,

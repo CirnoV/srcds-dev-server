@@ -10,6 +10,10 @@ pub(crate) fn run_gomplate(root: &PathBuf, config: &DevServerConfig) {
         .env("SERVER_ENV", "test")
         .env("DB_USER", &config.db_username)
         .env("DB_PASSWORD", &config.db_password)
+        .env(
+            "WEBSHARE_URL",
+            format!("http://{}:{}/", &config.webshare_ip, &config.webshare_port),
+        )
         .stdout(Stdio::inherit())
         .output()
         .expect("failed to execute gomplate");
