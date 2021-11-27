@@ -7,10 +7,10 @@ pub(crate) mod template;
 use std::{
     env,
     path::{Path, PathBuf},
-    thread,
 };
 
 use anyhow::Result;
+use srcds::{generate_server_launcher, run_server_launcher};
 use structopt::StructOpt;
 use watchexec::{
     config::{Config, ConfigBuilder},
@@ -42,18 +42,6 @@ fn get_root_dir() -> PathBuf {
     env::current_dir().unwrap().parent().unwrap().to_path_buf()
 }
 
-fn generate_server_launcher(root: &PathBuf, port: u16) {
-    std::fs::write(
-        &root.join("서버실행.bat"),
-        format!(r#"
-        @echo off
-        cls
-        title Server Restarter
-        start /high /wait srcds.exe -console -game cstrike -tickrate 66 -ip 0.0.0.0 -port {} -maxplayers 40 +map zm_cyland2_sg_fix -autoupdate
-    "#, port),
-    ).unwrap();
-}
-
 fn main() -> Result<()> {
     let root = get_root_dir();
     let config_path = root.join("srcds-dev-server.toml");
@@ -75,6 +63,7 @@ fn main() -> Result<()> {
             return Ok(());
         }
         Command::Run => {
+            // start_srcds.bat 생성
             generate_server_launcher(&root, server_config.port);
             run_gomplate(&root, &server_config);
 
@@ -92,17 +81,8 @@ fn main() -> Result<()> {
                 .cmd(vec!["".into()])
                 .build()?;
 
-            {
-                let root = root.clone();
-                thread::spawn(|| {
-                    std::process::Command::new("서버실행.bat")
-                        .current_dir(root)
-                        .output()
-                        .expect("failed to execute srcds");
-
-                    std::process::exit(1);
-                });
-            }
+            // start_srcds.bat 실행
+            run_server_launcher(&root);
 
             // let _handle = run_miniserve(&root, &server_config);
 
