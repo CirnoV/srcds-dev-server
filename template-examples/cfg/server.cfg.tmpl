@@ -1,0 +1,71 @@
+{{ $hostname := "" -}}
+{{ $password := "" -}}
+{{ $download_url := "link/to/webshare/" -}}
+{{ $download_path := "" -}}
+{{ $download_url_override := env.Getenv "WEBSHARE_URL" "" -}}
+
+{{ if eq .Env.SERVER_ENV "test" -}}
+
+  {{ $hostname = "TEST SERVER" -}}
+  {{ $download_path = "share_test/" -}}
+  {{ $password = "PASSWORD" -}}
+
+{{ end -}}
+
+hostname "{{ $hostname }}"
+sv_password "{{ $password }}"
+rcon_password "{{ .Env.RCON_PASSWORD }}"
+sv_downloadurl "{{ $download_url }}{{ $download_path }}"
+{{ if ne $download_url_override "" -}}
+  sv_downloadurl "{{$download_url_override}}"
+{{ end -}}
+
+sv_minrate 66000
+sv_maxrate 66000
+sv_mincmdrate 66
+sv_minupdaterate 66
+host_thread_mode 1
+
+sv_airaccelerate 9999
+phys_pushscale 0
+sv_enablebunnyhopping 0
+sv_region 4
+
+mp_roundtime 5
+mp_timelimit 20
+mp_freezetime 0
+
+mp_autoteambalance 0
+mp_autokick 0
+mp_allowspectators 1
+
+bot_auto_vacate 0
+bot_join_after_player 0
+
+sv_nomvp 1
+sv_nostats 1
+sv_hudhint_sound 0
+sv_use_steam_voice 1
+
+ammo_50AE_max 999 // DEagle0
+ammo_762mm_max 999 // Scout, AK47, G3SG1, AUG
+ammo_556mm_box_max 999 // M249
+ammo_556mm_max 999 // Galil, SG552, Famas, M4A1, SG550
+ammo_338mag_max 999 // AWP
+ammo_9mm_max 999 // MP5Navy, TMP, Glock, Elite
+ammo_buckshot_max 999 // M3, XM1014
+ammo_45acp_max 999 // UMP45, MAC10, USP
+ammo_357sig_max 999 // P228
+ammo_57mm_max 999 // P90, FiveSeven
+
+bot_chatter off
+
+sm_antistucknoblock 1
+
+sv_alltalk 1
+
+mp_flashlight 1
+
+decalfrequency 3
+
+mp_forcecamera 0
