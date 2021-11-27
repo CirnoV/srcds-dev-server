@@ -40,11 +40,12 @@ enum Command {
 }
 
 fn get_root_dir() -> PathBuf {
-    env::current_dir().unwrap().parent().unwrap().to_path_buf()
+    env::current_dir().unwrap().to_path_buf()
 }
 
 fn main() -> Result<()> {
     let root = get_root_dir();
+    println!("{}", root.display());
     let config_path = root.join("srcds-dev-server.toml");
     let server_config: DevServerConfig = match parse_config(&config_path) {
         Ok(config) => config,
