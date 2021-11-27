@@ -1,5 +1,5 @@
 [package]
-name = "touhou-dev-server"
+name = "srcds-dev-server"
 version = "0.1.0"
 authors = ["CirnoV <cirnov59@gmail.com>"]
 edition = "2018"
