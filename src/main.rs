@@ -12,6 +12,7 @@ use std::{
 use anyhow::Result;
 use srcds::{generate_server_launcher, run_server_launcher};
 use structopt::StructOpt;
+use template::generate_gomplate_template;
 use watchexec::{
     config::{Config, ConfigBuilder},
     error::Error,
@@ -65,6 +66,9 @@ fn main() -> Result<()> {
         Command::Run => {
             // start_srcds.bat 생성
             generate_server_launcher(&root, server_config.port);
+            // .gomplate.yaml 생성
+            generate_gomplate_template(&root);
+            // gomplate 엔진 실행
             run_gomplate(&root, &server_config);
 
             let cstrike = &root.join("cstrike");
