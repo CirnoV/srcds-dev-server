@@ -1,0 +1,44 @@
+"Databases"
+{
+	"driver_default"		"mysql"
+
+	// When specifying "host", you may use an IP address, a hostname, or a socket file path
+
+	"mydb"
+	{
+		"driver"			"mysql"
+		"host"				"localhost"
+		"database"			"mydb"
+		"user"				"{{ .Env.DB_USER }}"
+		"pass"				"{{ .Env.DB_PASSWORD }}"
+		//"timeout"			"0"
+		//"port"			"0"
+	}
+	"familysharing"
+	{
+		"driver"			"mysql"
+		"host"				"localhost"
+		"database"			"familysharing"
+		"user"				"{{ .Env.DB_USER }}"
+		"pass"				"{{ .Env.DB_PASSWORD }}"
+		//"timeout"			"0"
+		//"port"			"0"
+	}
+
+	"storage-local"
+	{
+		"driver"			"sqlite"
+		"database"			"sourcemod-local"
+	}
+
+	"clientprefs"
+	{
+		"driver"			"sqlite"
+		"host"				"localhost"
+		"database"			"clientprefs-sqlite"
+		"user"				"root"
+		"pass"				""
+		//"timeout"			"0"
+		//"port"			"0"
+	}
+}
