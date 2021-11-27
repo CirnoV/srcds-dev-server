@@ -39,7 +39,7 @@ enum Command {
 }
 
 fn get_root_dir() -> PathBuf {
-    env::current_exe().unwrap().parent().unwrap().to_path_buf()
+    env::current_dir().unwrap().parent().unwrap().to_path_buf()
 }
 
 fn generate_server_launcher(root: &PathBuf, port: u16) {
