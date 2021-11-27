@@ -56,7 +56,7 @@ fn generate_server_launcher(root: &PathBuf, port: u16) {
 
 fn main() -> Result<()> {
     let root = get_root_dir();
-    let config_path = root.join("touhou-dev-server.toml");
+    let config_path = root.join("srcds-dev-server.toml");
     let server_config: DevServerConfig = match parse_config(&config_path) {
         Ok(config) => config,
         Err(_) => {

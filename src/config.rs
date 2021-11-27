@@ -34,7 +34,7 @@ pub fn generate_config_file(path: &PathBuf) {
         toml::to_string_pretty(&DevServerConfig::default()).unwrap(),
     )
     .unwrap();
-    println!("touhou-dev-server.toml 파일을 생성했습니다.");
+    println!("srcds-dev-server.toml 파일을 생성했습니다.");
 }
 
 pub fn parse_config(path: &PathBuf) -> anyhow::Result<DevServerConfig> {
