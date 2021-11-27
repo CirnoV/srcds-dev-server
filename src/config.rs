@@ -12,6 +12,7 @@ pub struct DevServerConfig {
     pub rcon_password: String,
     pub webshare_ip: String,
     pub webshare_port: u16,
+    pub map: Option<String>,
 }
 
 impl Default for DevServerConfig {
@@ -24,6 +25,7 @@ impl Default for DevServerConfig {
             rcon_password: rand::random::<u64>().to_string(),
             webshare_ip: "0.0.0.0".into(),
             webshare_port: rand::thread_rng().gen_range(1024..49151),
+            map: Option::None,
         }
     }
 }

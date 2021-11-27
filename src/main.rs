@@ -36,7 +36,7 @@ struct Opt {
 #[derive(StructOpt, Debug)]
 enum Command {
     Install,
-    Run,
+    Run { map: Option<String> },
 }
 
 fn get_root_dir() -> PathBuf {
@@ -63,7 +63,13 @@ fn main() -> Result<()> {
             );
             return Ok(());
         }
-        Command::Run => {
+        Command::Run { map } => {
+            let map = match (&server_config.map, map) {
+                (Some(map), _) => map.clone(),
+                (_, Some(map)) => map,
+                (None, None) => panic!("map is not specified"),
+            };
+
             // start_srcds.bat 생성
             generate_server_launcher(&root, server_config.port);
             // .gomplate.yaml 생성
@@ -75,6 +81,7 @@ fn main() -> Result<()> {
             let sourcemod = &cstrike.join("addons").join("sourcemod");
             let plugins = &sourcemod.join("plugins");
 
+            // cstrike/addons/sourcemod/plugins/*.smx 변경 감시
             let config = ConfigBuilder::default()
                 .clear_screen(true)
                 .run_initially(true)
@@ -88,25 +95,25 @@ fn main() -> Result<()> {
             // start_srcds.bat 실행
             run_server_launcher(&root);
 
-            // let _handle = run_miniserve(&root, &server_config);
-
-            let handler = MyHandler {
+            let handler = PluginChangeHandler {
                 root: root,
                 config: server_config.clone(),
                 handler: ExecHandler::new(config)?,
+                map,
             };
             watch(&handler).map_err(|err| anyhow::Error::new(err))
         }
     }
 }
 
-struct MyHandler {
+struct PluginChangeHandler {
     root: PathBuf,
     config: DevServerConfig,
     handler: ExecHandler,
+    map: String,
 }
 
-impl Handler for MyHandler {
+impl Handler for PluginChangeHandler {
     fn args(&self) -> Config {
         self.handler.args()
     }
@@ -118,7 +125,7 @@ impl Handler for MyHandler {
 
     fn on_update(&self, ops: &[PathOp]) -> Result<bool, Error> {
         run_gomplate(&self.root, &self.config);
-        srcds::rcon(&self.config, "sm_restartmap".into());
+        srcds::rcon(&self.config, format!("sm_map changelevel {}", self.map));
         self.handler.on_update(ops)
     }
 }
